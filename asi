@@ -1,0 +1,73 @@
+import cv2
+import numpy as np
+import matplotlib.pyplot as plt
+
+img = cv2.imread('tomate4.png') # poner imagen de platanos o mangos
+img_rgb = cv2.cvtColor(img,cv2.COLOR_BGR2RGB)     #convertir de bgr a rgb
+img_gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)   #convertir de bgr a gray
+img_hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)    #convierte bgr a hsv
+
+
+#hacer mascara
+lower_yellow = np.array([22, 140, 140])
+upper_yellow = np.array([34, 255, 255])
+
+lower_green= np.array([35, 40, 40])
+upper_green = np.array([85, 255, 255])
+
+
+lower_red = np.array([0, 70, 50])
+upper_red = np.array([15, 255, 255])
+
+
+mask_yellow = cv2.inRange(img_hsv, lower_yellow, upper_yellow)
+img_filtro_amarillo = cv2.bitwise_and(img_hsv,img_hsv,mask=mask_yellow)
+
+mask_red = cv2.inRange(img_hsv, lower_red, upper_red)
+img_filtro_rojo = cv2.bitwise_and(img_hsv,img_hsv,mask=mask_red)
+
+mask_green = cv2.inRange(img_hsv, lower_green, upper_green)
+img_filtro_verde = cv2.bitwise_and(img_hsv,img_hsv,mask=mask_green)
+
+
+plt.figure(figsize=(15,5))
+
+plt.subplot(2,3,1)
+plt.imshow(img_rgb)
+plt.axis('off')
+plt.title('Imagen original')
+
+plt.subplot(2,3,2)
+plt.imshow(img_gray, cmap = "gray")
+plt.axis('off')
+plt.title('Fruta con el filtro gris')
+
+plt.subplot(2,3,3)
+plt.imshow(cv2.cvtColor(img_hsv, cv2.COLOR_HSV2RGB))
+plt.axis('off')
+plt.title('Imagen original HSV')
+
+plt.subplot(2,3,4)
+plt.imshow(cv2.cvtColor(img_filtro_amarillo, cv2.COLOR_HSV2RGB))
+plt.axis('off')
+plt.title('Imagen con filtro amarillo')
+
+plt.subplot(2,3,5)
+plt.imshow(cv2.cvtColor(img_filtro_rojo, cv2.COLOR_HSV2RGB))
+plt.axis('off')
+plt.title('Imagen con filtro rojo')
+
+plt.subplot(2,3,6)
+plt.imshow(cv2.cvtColor(img_filtro_verde, cv2.COLOR_HSV2RGB))
+plt.axis('off')
+plt.title('Imagen con filtro verde')
+
+yellow_count = np.sum(mask_yellow > 0)
+red_count = np.sum(mask_red > 0)
+green_count = np.sum(mask_green > 0)
+
+print("Cantidad de pixeles amarillos: {yellow_count}")
+print("Cantidad de pixeles rojos: {red_count}")
+print("Cantidad de pixeles verdes: {green_count}")
+
+
